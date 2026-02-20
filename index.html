@@ -16,7 +16,6 @@ body{
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
-/* Marco */
 .phone{
     width:390px;
     height:820px;
@@ -37,7 +36,6 @@ body{
     flex-direction:column;
 }
 
-/* Isla */
 .island{
     width:140px;
     height:30px;
@@ -49,7 +47,6 @@ body{
     transform:translateX(-50%);
 }
 
-/* Header */
 .header{
     background:#075E54;
     color:white;
@@ -70,7 +67,6 @@ body{
 .verified{color:#4FC3F7;font-size:14px;margin-left:4px;}
 .status{font-size:12px;opacity:.8;}
 
-/* Chat */
 .chat{
     flex:1;
     padding:15px;
@@ -121,24 +117,15 @@ body{
     cursor:pointer;
 }
 
-/* Typing */
 .typing{
     font-size:12px;
     color:gray;
     font-style:italic;
 }
 
-/* ===== MENU ESTILO WHATSAPP ===== */
-
 @keyframes menuPop{
-    0%{
-        opacity:0;
-        transform:scale(.85) translateY(10px);
-    }
-    100%{
-        opacity:1;
-        transform:scale(1) translateY(0);
-    }
+    0%{opacity:0;transform:scale(.85) translateY(10px);}
+    100%{opacity:1;transform:scale(1) translateY(0);}
 }
 
 .wa-menu{
@@ -168,7 +155,6 @@ body{
     background:#fafafa;
 }
 
-/* estrellas */
 .stars{font-size:22px;cursor:pointer;color:#ccc;}
 .stars span.active{color:gold;}
 </style>
@@ -203,6 +189,14 @@ body{
 const chat=document.getElementById("chat");
 const input=document.getElementById("input");
 
+/* 🔥 ENTER PARA ENVIAR (PC + CELULAR) */
+input.addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        e.preventDefault();
+        send();
+    }
+});
+
 let etapa="menu";
 let numeroCaso="";
 let agente="";
@@ -230,7 +224,6 @@ function generarCaso(){
     numeroCaso="KFC-"+fecha+"-"+String(consecutivo++).padStart(4,"0");
 }
 
-/* MENU */
 function menu(){
     add("👋 Bienvenid(a) a La Línea del Coronel 🍗🍗.<br><br>Selecciona una opción:","bot");
 
@@ -238,17 +231,13 @@ function menu(){
     cont.className="msg bot";
     cont.innerHTML=`
     <div class="wa-menu">
-
         <div class="wa-item" onclick="opcion('Contacto con el cliente')">Contacto con el cliente 📋</div>
         <div class="wa-item" onclick="opcion('Soporte Dragontail')">Soporte Dragontail 🐉</div>
         <div class="wa-item" onclick="opcion('Validación de Pagos')">Validación de Pagos 💰</div>
         <div class="wa-item" onclick="opcion('Validación Pickup')">Validación Pickup 📱</div>
         <div class="wa-item" onclick="opcion('Integración Pedidos')">Integración Pedidos 🖥️</div>
-
         <div class="wa-footer">Da clic sobre tu opción</div>
-
-    </div>
-    `;
+    </div>`;
     chat.appendChild(cont);
     chat.scrollTop=chat.scrollHeight;
 }
@@ -259,7 +248,7 @@ function opcion(txt){
     add(txt,"user");
 
     setTimeout(()=>{
-        add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>¡Hola! Bienvenido/a a la Linea del Coronel Mi nombre es❤️🍗${agente} y estaré encantado/a de ayudarte el día de hoy. ¿Me puedes dar el detalle de tu solicitud?.`,"bot");
+        add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>¡Hola! Bienvenido/a a la Linea del Coronel ❤️🍗 Mi nombre es ${agente} y estaré encantado/a de ayudarte el día de hoy. ¿Me puedes dar el detalle de tu solicitud?`,"bot");
         etapa="detalle";
     },700);
 }
@@ -274,7 +263,7 @@ function send(){
         typing();
         setTimeout(()=>{
             removeTyping();
-            add(" Estamos validando tu solicitud🍗❤️...","bot");
+            add("🍗❤️ Estamos validando tu solicitud...","bot");
             etapa="respuesta";
         },2000);
     }
@@ -282,7 +271,7 @@ function send(){
         typing();
         setTimeout(()=>{
             removeTyping();
-            add(`✅ Tu solicitud ah sido realizada correctamnete.<br><br>¿Necesitas algo más?`,"bot");
+            add(`✅ Tu solicitud ha sido realizada correctamente.<br><br>¿Necesitas algo más?`,"bot");
             etapa="final";
         },2000);
     }
@@ -311,7 +300,7 @@ function encuesta(){
     div.className="msg bot";
     div.innerHTML=`
     Antes de cerrar el caso ${numeroCaso},<br>
-    ¿cómo calificarías Mi gestión 🍗❤️ ?<br><br>
+    ¿cómo calificarías mi gestión 🍗❤️?<br><br>
     <div class="stars">
     <span onclick="rate(1)">★</span>
     <span onclick="rate(2)">★</span>
@@ -328,7 +317,7 @@ function rate(v){
     stars.forEach((s,i)=>s.classList.toggle("active",i<v));
 
     setTimeout(()=>{
-        add(`⭐ Calificación ${v}/5 recibida.<br><br>🔴 Caso ${numeroCaso} cerrado.<br>Gracias por contactarte a la Linea del Coronel 🍗❤️ .`,"bot");
+        add(`⭐ Calificación ${v}/5 recibida.<br><br>🔴 Caso ${numeroCaso} cerrado.<br>Gracias por contactarte a la Línea del Coronel 🍗❤️.`,"bot");
         etapa="cerrado";
     },800);
 }
@@ -337,6 +326,5 @@ menu();
 </script>
 
 </body>
-
 </html>
 
