@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Línea del Coronel</title>
+
+<style>
+body{
+    margin:0;
+    background:#d1d1d1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+/* Marco */
+.phone{
+    width:390px;
+    height:820px;
+    background:black;
+    border-radius:55px;
+    padding:14px;
+    box-shadow:0 30px 60px rgba(0,0,0,.6);
+    position:relative;
+}
+
+.screen{
+    width:100%;
+    height:100%;
+    background:#e5ddd5;
+    border-radius:45px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+/* Isla */
+.island{
+    width:140px;
+    height:30px;
+    background:black;
+    border-radius:20px;
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+/* Header */
+.header{
+    background:#075E54;
+    color:white;
+    padding:45px 15px 15px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header img{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.name{font-weight:bold;}
+.verified{color:#4FC3F7;font-size:14px;margin-left:4px;}
+.status{font-size:12px;opacity:.8;}
+
+/* Chat */
+.chat{
+    flex:1;
+    padding:15px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+.msg{
+    max-width:75%;
+    padding:8px 12px;
+    border-radius:10px;
+    margin:4px 0;
+    font-size:14px;
+}
+
+.bot{background:white;align-self:flex-start;}
+.user{background:#DCF8C6;align-self:flex-end;}
+
+.time{
+    font-size:10px;
+    color:gray;
+    text-align:right;
+}
+
+.check{font-size:10px;color:#4FC3F7;margin-left:4px;}
+
+.input-area{
+    background:#f0f0f0;
+    padding:10px;
+    display:flex;
+}
+
+.input-area input{
+    flex:1;
+    padding:8px;
+    border-radius:20px;
+    border:1px solid #ccc;
+}
+
+.input-area button{
+    margin-left:5px;
+    padding:8px 12px;
+    border:none;
+    border-radius:50%;
+    background:#25D366;
+    color:white;
+    cursor:pointer;
+}
+
+/* Typing */
+.typing{
+    font-size:12px;
+    color:gray;
+    font-style:italic;
+}
+
+/* ===== MENU ESTILO WHATSAPP ===== */
+
+@keyframes menuPop{
+    0%{
+        opacity:0;
+        transform:scale(.85) translateY(10px);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}
+
+.wa-menu{
+    width:260px;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+    animation:menuPop .35s ease;
+}
+
+.wa-item{
+    padding:14px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.wa-item:last-child{border-bottom:none;}
+.wa-item:hover{background:#f5f5f5;}
+
+.wa-footer{
+    text-align:center;
+    font-size:12px;
+    color:#888;
+    padding:10px;
+    background:#fafafa;
+}
+
+/* estrellas */
+.stars{font-size:22px;cursor:pointer;color:#ccc;}
+.stars span.active{color:gold;}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+<div class="island"></div>
+
+<div class="screen">
+
+<div class="header">
+<img src="coronel.png">
+<div>
+<div class="name">La Línea del Coronel <span class="verified">✔</span></div>
+<div class="status">Cuenta verificada • En línea</div>
+</div>
+</div>
+
+<div class="chat" id="chat"></div>
+
+<div class="input-area">
+<input type="text" id="input" placeholder="Mensaje">
+<button onclick="send()">➤</button>
+</div>
+
+</div>
+</div>
+
+<script>
+const chat=document.getElementById("chat");
+const input=document.getElementById("input");
+
+let etapa="menu";
+let numeroCaso="";
+let agente="";
+let consecutivo=1;
+const agentes=["Andrés","Laura","Camilo","Valentina"];
+
+function hora(){
+    const d=new Date();
+    return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
+}
+
+function add(text,type){
+    const div=document.createElement("div");
+    div.className="msg "+type;
+    div.innerHTML=text+`<div class="time">${hora()} ${type==="user" ? '<span class="check">✓✓</span>' : ''}</div>`;
+    chat.appendChild(div);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function generarCaso(){
+    const d=new Date();
+    const fecha=d.getFullYear().toString().slice(-2)+
+    String(d.getMonth()+1).padStart(2,"0")+
+    String(d.getDate()).padStart(2,"0");
+    numeroCaso="KFC-"+fecha+"-"+String(consecutivo++).padStart(4,"0");
+}
+
+/* MENU */
+function menu(){
+    add("👋 Bienvenid(a) a La Línea del Coronel 🍗🍗.<br><br>Selecciona una opción:","bot");
+
+    const cont=document.createElement("div");
+    cont.className="msg bot";
+    cont.innerHTML=`
+    <div class="wa-menu">
+
+        <div class="wa-item" onclick="opcion('Contacto con el cliente')">Contacto con el cliente 📋</div>
+        <div class="wa-item" onclick="opcion('Soporte Dragontail')">Soporte Dragontail 🧾</div>
+        <div class="wa-item" onclick="opcion('Validación de Pagos')">Validación de Pagos 💰</div>
+        <div class="wa-item" onclick="opcion('Validación Pickup')">Validación Pickup 🏪</div>
+        <div class="wa-item" onclick="opcion('Integración Pedidos')">Integración Pedidos 💯</div>
+
+        <div class="wa-footer">Da clic sobre tu opción</div>
+
+    </div>
+    `;
+    chat.appendChild(cont);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function opcion(txt){
+    generarCaso();
+    agente=agentes[Math.floor(Math.random()*agentes.length)];
+    add(txt,"user");
+
+    setTimeout(()=>{
+        add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>¡Hola! Bienvenido/a a la Linea del Coronel Mi nombre es❤️🍗${agente} y estaré encantado/a de ayudarte el día de hoy. ¿Me puedes dar el detalle de tu solicitud?.`,"bot");
+        etapa="detalle";
+    },700);
+}
+
+function send(){
+    const text=input.value.trim();
+    if(!text)return;
+    add(text,"user");
+    input.value="";
+
+    if(etapa==="detalle"){
+        typing();
+        setTimeout(()=>{
+            removeTyping();
+            add(" Estamos validando tu solicitud🍗❤️...","bot");
+            etapa="respuesta";
+        },2000);
+    }
+    else if(etapa==="respuesta"){
+        typing();
+        setTimeout(()=>{
+            removeTyping();
+            add(`✅ Tu solicitud ah sido realizada correctamnete.<br><br>¿Necesitas algo más?`,"bot");
+            etapa="final";
+        },2000);
+    }
+    else if(etapa==="final"){
+        encuesta();
+        etapa="encuesta";
+    }
+}
+
+function typing(){
+    const t=document.createElement("div");
+    t.className="typing";
+    t.id="typing";
+    t.innerText=agente+" está escribiendo...";
+    chat.appendChild(t);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function removeTyping(){
+    const t=document.getElementById("typing");
+    if(t)t.remove();
+}
+
+function encuesta(){
+    const div=document.createElement("div");
+    div.className="msg bot";
+    div.innerHTML=`
+    Antes de cerrar el caso ${numeroCaso},<br>
+    ¿cómo calificarías Mi gestión 🍗❤️ ?<br><br>
+    <div class="stars">
+    <span onclick="rate(1)">★</span>
+    <span onclick="rate(2)">★</span>
+    <span onclick="rate(3)">★</span>
+    <span onclick="rate(4)">★</span>
+    <span onclick="rate(5)">★</span>
+    </div>`;
+    chat.appendChild(div);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function rate(v){
+    const stars=document.querySelectorAll(".stars span");
+    stars.forEach((s,i)=>s.classList.toggle("active",i<v));
+
+    setTimeout(()=>{
+        add(`⭐ Calificación ${v}/5 recibida.<br><br>🔴 Caso ${numeroCaso} cerrado.<br>Gracias por mantener la operación en punto.`,"bot");
+        etapa="cerrado";
+    },800);
+}
+
+menu();
+</script>
+
+</body>
+</html>
