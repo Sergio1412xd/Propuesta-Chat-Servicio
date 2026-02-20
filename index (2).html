@@ -328,7 +328,7 @@ function rate(v){
     stars.forEach((s,i)=>s.classList.toggle("active",i<v));
 
     setTimeout(()=>{
-        add(`⭐ Calificación ${v}/5 recibida.<br><br>🔴 Caso ${numeroCaso} cerrado.<br>Gracias por mantener la operación en punto.`,"bot");
+        add(`⭐ Calificación ${v}/5 recibida.<br><br>🔴 Caso ${numeroCaso} cerrado.<br>,"bot");
         etapa="cerrado";
     },800);
 }
@@ -337,4 +337,5 @@ menu();
 </script>
 
 </body>
+
 </html>
