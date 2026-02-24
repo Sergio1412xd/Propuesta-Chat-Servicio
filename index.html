@@ -186,10 +186,10 @@ body{
 </div>
 
 <script>
+
 const chat=document.getElementById("chat");
 const input=document.getElementById("input");
 
-/* 🔥 ENTER PARA ENVIAR (PC + CELULAR) */
 input.addEventListener("keydown", function(e){
     if(e.key === "Enter"){
         e.preventDefault();
@@ -231,7 +231,7 @@ function menu(){
     cont.className="msg bot";
     cont.innerHTML=`
     <div class="wa-menu">
-        <div class="wa-item" onclick="opcion('Contacto con el cliente')">Contacto con el cliente 📋</div>
+        <div class="wa-item" onclick="opcion('Contacto con el cliente')">Confirmación de datos 📋</div>
         <div class="wa-item" onclick="opcion('Soporte Dragontail')">Soporte Dragontail 🐉</div>
         <div class="wa-item" onclick="opcion('Validación de Pagos')">Validación de Pagos 💰</div>
         <div class="wa-item" onclick="opcion('Validación Pickup')">Validación Pickup 📱</div>
@@ -248,7 +248,80 @@ function opcion(txt){
     add(txt,"user");
 
     setTimeout(()=>{
-        add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>¡Hola! Bienvenido/a a la Linea del Coronel ❤️🍗 Mi nombre es ${agente} y estaré encantado/a de ayudarte el día de hoy. ¿Me puedes dar el detalle de tu solicitud?`,"bot");
+
+        if(txt === "Contacto con el cliente"){
+            add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>
+            ¡Hola! Bienvenido/a a la Linea del Coronel ❤️🍗 
+            Mi nombre es ${agente}. ¿Me podrías enviar una foto de la factura de la orden por favor?`,"bot");
+            etapa="detalle";
+        }
+
+        else if(txt === "Soporte Dragontail"){
+            add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>
+            Hola, soy ${agente}. Selecciona el motivo:`,"bot");
+
+            subMenu([
+                "Asignación Domiciliario",
+                "Cambio de estado de orden",
+                "Dashboard",
+                "Actualización cobertura"
+            ]);
+
+            etapa="subopcion";
+        }
+
+        else if(txt === "Validación de Pagos"){
+            add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>
+            Hola, soy ${agente}. Selecciona el motivo:`,"bot");
+
+            subMenu([
+                "Nequi",
+                "APP – WEB - PICKUP"
+            ]);
+
+            etapa="subopcion";
+        }
+
+        else if(txt === "Validación Pickup"){
+            add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>
+            Hola, soy ${agente}. ¿Me puedes enviar el numero de la orden o correo electrónico del cliente?`,"bot");
+            etapa="detalle";
+        }
+
+        else if(txt === "Integración Pedidos"){
+            add(`🎫 Tu Numero de Ticket es: ${numeroCaso}.<br><br>
+            Hola, soy ${agente}. ¿Me puedes enviar el numero de la orden no integrada?`,"bot");
+            etapa="detalle";
+        }
+
+    },700);
+}
+
+function subMenu(opciones){
+    const cont=document.createElement("div");
+    cont.className="msg bot";
+
+    let botones = opciones.map(o =>
+        `<div class="wa-item" onclick="subOpcion('${o}')">${o}</div>`
+    ).join("");
+
+    cont.innerHTML=`
+    <div class="wa-menu">
+        ${botones}
+        <div class="wa-footer">Selecciona una opción</div>
+    </div>`;
+
+    chat.appendChild(cont);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+function subOpcion(txt){
+    add(txt,"user");
+
+    setTimeout(()=>{
+        add(`Perfecto 👍 Hemos registrado tu solicitud por: <b>${txt}</b>.<br><br>
+        Por favor envíanos el detalle del caso para continuar.`,"bot");
+
         etapa="detalle";
     },700);
 }
@@ -317,12 +390,15 @@ function rate(v){
     stars.forEach((s,i)=>s.classList.toggle("active",i<v));
 
     setTimeout(()=>{
-        add(`⭐ Calificación ${v}/5 recibida.<br><br>🔴 Caso ${numeroCaso} cerrado.<br>Gracias por contactarte a la Línea del Coronel 🍗❤️.`,"bot");
+        add(`⭐ Calificación ${v}/5 recibida.<br><br>
+        🔴 Caso ${numeroCaso} cerrado.<br>
+        Gracias por contactarte a la Línea del Coronel 🍗❤️.`,"bot");
         etapa="cerrado";
     },800);
 }
 
 menu();
+
 </script>
 
 </body>
